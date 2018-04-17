@@ -8,7 +8,8 @@ using WebAdmin.WebApi.Controllers.Queries.TestModel;
 using WebAdmin.WebApi.Models;
 
 namespace WebAdmin.WebApi.Controllers.Queries
-{
+
+    public class CodeReviewsQuery : ICodeReviewsQuery
     public class CodeReviewsQuery : ICodeReviewsQuery
     {
         CodeReviewModel ICodeReviewsQuery.Get(
