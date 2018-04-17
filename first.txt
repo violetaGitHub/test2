@@ -11,6 +11,16 @@ namespace WebAdmin.WebApi.Controllers.Queries
 {
     public class CodeReviewsQuery : ICodeReviewsQuery
     {
+        CodeReviewModel ICodeReviewsQuery.Get(
+            RepId repId, int reviewId)
+        {
+            return Server.Repositories.First().CodeReviews.First();
+            /*return Server.Repositories
+                .Where(rep => rep.Id.Equals(repId))
+                .SelectMany(rep => rep.CodeReviews)
+                .First(); //OrDefault(codeReview => codeReview.Id.Equals(reviewId));*/
+        }
+
         IEnumerable<CodeReviewModel> ICodeReviewsQuery.GetAll(
             RepId repId, CodeReviewFilter filter)
         {
