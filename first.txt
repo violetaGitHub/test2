@@ -1,1 +1,167 @@
 change this file
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+using Codice.CM.Common;
+using WebAdmin.WebApi.Controllers.Queries.TestModel;
+using WebAdmin.WebApi.Models;
+
+namespace WebAdmin.WebApi.Controllers.Queries
+{
+    public class CodeReviewsQuery : ICodeReviewsQuery
+    {
+        IEnumerable<CodeReviewModel> ICodeReviewsQuery.GetAll(
+            RepId repId, CodeReviewFilter filter)
+        {
+            return Server.Repositories
+                .Where(rep => rep.Id.Equals(repId))
+                .SelectMany(rep => rep.CodeReviews)
+                .Where(codeReview => NeedsCodeReview(codeReview, filter));
+        }
+
+        CodeReviewModel ICodeReviewsQuery.Get(
+            RepId repId, int reviewId)
+        {
+            return Server.Repositories.First().CodeReviews.First();
+            /*return Server.Repositories
+                .Where(rep => rep.Id.Equals(repId))
+                .SelectMany(rep => rep.CodeReviews)
+                .First(); //OrDefault(codeReview => codeReview.Id.Equals(reviewId));*/
+        }
+
+        long ICodeReviewsQuery.Create(RepId repId, CreateCodeReviewModel model)
+        {
+            return Server.Repositories.First().CodeReviews.First().Id;
+        }
+
+        bool ICodeReviewsQuery.Update(
+            RepId repId, int reviewId, UpdateCodeReviewModel model)
+        {
+            CodeReviewModel reviewModel = Server.Repositories
+                .Where(rep => rep.Id.Equals(repId))
+                .SelectMany(rep => rep.CodeReviews)
+                .FirstOrDefault(codeReview => codeReview.Id.Equals(reviewId));
+
+            if (reviewModel == null)
+                return false;
+
+            reviewModel.Title = model.Title;
+            reviewModel.Status = model.Status;
+            reviewModel.Assignee = model.Assignee;
+            return true;
+        }
+
+        void ICodeReviewsQuery.Remove(RepId repId, int reviewId)
+        {
+            Repository repository = Server.Repositories
+                .FirstOrDefault(rep => rep.Id.Equals(repId));
+
+            repository.CodeReviews = repository.CodeReviews.Where(
+                codeReview => codeReview.Id != reviewId).ToList();
+        }
+
+        void ICodeReviewsQuery.Remove(RepId repId, int reviewId)
+        {
+            Repository repository = Server.Repositories
+                .FirstOrDefault(rep => rep.Id.Equals(repId));
+
+            repository.CodeReviews = repository.CodeReviews.Where(
+                codeReview => codeReview.Id != reviewId).ToList();
+        }
+
+        void ICodeReviewsQuery.Remove(RepId repId, int reviewId)
+        {
+            Repository repository = Server.Repositories
+                .FirstOrDefault(rep => rep.Id.Equals(repId));
+
+            repository.CodeReviews = repository.CodeReviews.Where(
+                codeReview => codeReview.Id != reviewId).ToList(); //new
+        }
+
+        static bool NeedsCodeReview(
+            CodeReviewModel codeReview, CodeReviewFilter filter)
+        {
+            switch (filter)
+            {
+                //First change //new
+                //First change
+                case CodeReviewFilter.AllPending:
+                    return codeReview.Status == CodeReviewModel.StatusEnum.Pending;
+                case CodeReviewFilter.AssignedToMe:
+                    return codeReview.Assignee == CURRENT_USER;
+                case CodeReviewFilter.CreatedByMe:
+                    return codeReview.Owner == CURRENT_USER;
+                case CodeReviewFilter.All:
+                default:
+                    return true;
+            }
+        }
+
+        void ICodeReviewsQuery.Remove(RepId repId, int reviewId)
+        {
+            Repository repository = Server.Repositories
+                .FirstOrDefault(rep => rep.Id.Equals(repId));
+
+            repository.CodeReviews = repository.CodeReviews.Where(
+                codeReview => codeReview.Id != reviewId).ToList();
+        }
+
+        // PENDING TO BE USE INTO TASK 22108
+       static DateTime GetDateTime()
+       {
+           //Use UTC time to unlocalize the date
+           DateTime dt = DateTime.UtcNow;
+           return GetDateTime(dt);
+       }
+
+        long ICodeReviewsQuery.CreateComment(
+            RepId repId, int reviewId, CreateCodeReviewCommentModel model)
+        {
+            return Server.Repositories.First().CodeReviews.First().Comments.First().Id;
+        }
+
+        bool ICodeReviewsQuery.UpdateComment(
+            RepId repId, int commentId, string newComment)
+        {
+            CodeReviewCommentModel commentModel = Server.Repositories
+                .Where(rep => rep.Id.Equals(repId))
+                .SelectMany(rep => rep.CodeReviews)
+                .SelectMany(codeReview => codeReview.Comments)
+                .FirstOrDefault(comment => comment.Id.Equals(commentId));
+
+            if (commentModel == null)
+                return false;
+
+            commentModel.CommentText = newComment;
+            return true;
+        }
+
+        void ICodeReviewsQuery.RemoveComment(RepId repId, int commentId)
+        {
+            CodeReviewModel review = Server.Repositories
+                .Where(rep => rep.Id.Equals(repId))
+                .SelectMany(rep => rep.CodeReviews)
+                .FirstOrDefault(codeReview => codeReview.Comments.Any(
+                    comment => comment.Id.Equals(commentId)));
+
+            review.Comments = review.Comments.Where(
+                comment => comment.Id != commentId).ToList();
+        }
+
+       static DateTime GetDateTime(DateTime dt)
+       {
+           return new DateTime(
+               dt.Year,
+               dt.Month,
+               dt.Day,
+               dt.Hour,
+               dt.Minute,
+               dt.Second,
+               0,// no milliseconds
+               dt.Kind);
+       }
+
+        const string CURRENT_USER = "miguel";
+    }
+}
