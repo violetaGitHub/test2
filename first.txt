@@ -132,21 +132,6 @@ namespace WebAdmin.WebApi.Controllers.Queries
             return Server.Repositories.First().CodeReviews.First().Comments.First().Id;
         }
 
-        bool ICodeReviewsQuery.UpdateComment(
-            RepId repId, int commentId, string newComment)
-        {
-            CodeReviewCommentModel commentModel = Server.Repositories
-                .Where(rep => rep.Id.Equals(repId))
-                .SelectMany(rep => rep.CodeReviews)
-                .SelectMany(codeReview => codeReview.Comments)
-                .FirstOrDefault(comment => comment.Id.Equals(commentId));
-
-            if (commentModel == null)
-                return false;
-
-            commentModel.CommentText = newComment;
-            return true;
-        }
 
         void ICodeReviewsQuery.RemoveComment(RepId repId, int commentId)
         {
