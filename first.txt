@@ -9,7 +9,7 @@ using WebAdmin.WebApi.Models;
 //change in scm001
 
 namespace WebAdmin.WebApi.Controllers.Queries
-
+//change in the scm_2 local branch
     public class CodeReviewsQuery : ICodeReviewsQuery
     public class CodeReviewsQuery : ICodeReviewsQuery
     {
