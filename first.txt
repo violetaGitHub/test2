@@ -41,7 +41,7 @@ namespace WebAdmin.WebApi.Controllers.Queries
                 .SelectMany(rep => rep.CodeReviews)
                 .First(); //OrDefault(codeReview => codeReview.Id.Equals(reviewId));*/
         }
-
+other change
         long ICodeReviewsQuery.Create(RepId repId, CreateCodeReviewModel model)
         {
             return Server.Repositories.First().CodeReviews.First().Id;
